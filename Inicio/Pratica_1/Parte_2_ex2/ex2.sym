@@ -1,0 +1,12 @@
+GAS LISTING ex2.s 			page 1
+
+
+DEFINED SYMBOLS
+               ex2.s:14     *ABS*:0000000000000001 inkey
+               ex2.s:15     *ABS*:0000000000000003 putChar
+               ex2.s:19     .text:0000000000000000 main
+               ex2.s:20     .text:0000000000000000 do
+               ex2.s:23     .text:000000000000000c while1
+               ex2.s:27     .text:0000000000000028 while2
+
+NO UNDEFINED SYMBOLS

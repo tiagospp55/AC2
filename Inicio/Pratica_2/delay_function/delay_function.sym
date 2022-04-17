@@ -1,0 +1,16 @@
+GAS LISTING delay_function.s 			page 1
+
+
+DEFINED SYMBOLS
+    delay_function.s:1      *ABS*:000000000000000c resetCoreTimer
+    delay_function.s:2      *ABS*:000000000000000b readCoreTImer
+    delay_function.s:3      *ABS*:0000000000000003 putChar
+    delay_function.s:4      *ABS*:0000000000000006 PrintInt
+    delay_function.s:7      *ABS*:0000000000004e20 k
+    delay_function.s:12     .text:0000000000000000 main
+    delay_function.s:14     .text:0000000000000008 loop1
+    delay_function.s:41     .text:0000000000000044 delay
+    delay_function.s:44     .text:0000000000000058 loop2
+    delay_function.s:48     .text:0000000000000074 endloop2
+
+NO UNDEFINED SYMBOLS

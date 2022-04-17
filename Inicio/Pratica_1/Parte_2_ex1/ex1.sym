@@ -1,0 +1,11 @@
+GAS LISTING ex1.s 			page 1
+
+
+DEFINED SYMBOLS
+               ex1.s:13     *ABS*:0000000000000002 GetChar
+               ex1.s:14     *ABS*:0000000000000003 putChar
+               ex1.s:17     .text:0000000000000000 main
+               ex1.s:18     .text:0000000000000000 do
+               ex1.s:24     .text:0000000000000020 while
+
+NO UNDEFINED SYMBOLS
