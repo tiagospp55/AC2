@@ -17,7 +17,7 @@ main:
 
         
         lw       $t1, TRISB($t0)
-        andi     $t1, $t1, 0x0001 
+        ori     $t1, $t1, 0x0001 
         sw       $t1, TRISB($t0)   #Entrada se tiver a 1
 
         # O TRIS diz ao processador se aquele porto é uma entrada ou saida
