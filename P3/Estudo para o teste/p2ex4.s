@@ -1,38 +1,7 @@
-.text
 .data
+.text
 .globl main
 
-main:
-    addiu $sp, $sp, -12
-    sw $ra, 0($sp)
-    sw $s0, 4($sp)
-    sw $s1, 8($sp)
-
-    li $s0, 0
-    li $t0, STR_BRUH
-    lw $t1, TRISE($t0)
-    andi $t1, $t1, 0xFFFE
-    sw $t1, TRISE($t0)
-
-loop:
-    lw $t1, LATE($t0)
-    andi $t1, $t1, 0xFFFE
-    or $t1, $t1, $s0
-    sw $t1, LATE($t0)
-   
-    li $a0, 500
-    jal delay
-
-    xori $s0, $s0, 1
-    j loop
-endloop:
-
-    lw $ra, 0($sp)
-    lw $s0, 4($sp)
-    lw $s1, 8($sp)
-    
-    li $v0, 0
-    jr $ra
 
 
 delay:                                  # void delay(int ms) {
@@ -48,4 +17,56 @@ read:   li      $v0, READ_CORE_TIMER    #
         j       for                     #       }
 endfor:                                 #       
         jr      $ra                     # }
+
+
+
+main: 
+    
+    addiu $sp, $sp, -12
+    sw $ra, 0($sp)
+    sw $s0, 4($sp)
+    sw $s1, 8($sp)
+
+
+    lui $s0, SFR_Bruh
+
+    lw $t1, TRISE($t0)
+    andi $t1, $t1, 0xFFF0
+    sw $t1, TRISE($t0)
+
+    lw $ $t1, TRISB
+    ori $t1, $t1, 0x000F
+    sw $t1, TRISB($t0)
+    # s0 é o counter
+    li $s1, 0
+
+loop:
+    
+    lw $t0, PORTB($s0)
+    andi $t0, $t0, 0x0002
+
+    if: 
+        beq $t0, 0x0002, else
+        srl $s1, $s1, 1
+        j endif
+    else:
+        sll $s1, $s1, 1
+endif:
+
+if2: 
+    bne $s1, 0x0010, endif2
+    li $s1, 1
+endif2: 
+    lw $t2, LATE($t0)
+    andi $t2, $t2, 0xFFF0
+    or $t2, $t2, $s1
+    sw $t2, TRISE($t0)
+
+    
+
+
+    
+    
+ 
+
 
