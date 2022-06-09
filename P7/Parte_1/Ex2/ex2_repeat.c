@@ -1,21 +1,62 @@
+#include <detpic32.h>
 
-//Interrupt handler
-void _int_(27) isr_adc(void)
-{
-    int *p = (int *) &ADC1BUF0;
-    int i, average = 0;
+    volatile unsigned char voltage;
+    unsigned int VECTOR = 27;
+int main(void){
 
-    for (i = 0; i < 8; i++)
-        average += p[i * 4];
+    unsigned int cnt = 0;
 
-    voltage = toBcd(voltageConversion(average / 8));
-    
+    TRISBbits.TRISB4 = 1;
+    AD1PCFGbits.PCFG4 = 0;
+    AD1CON1bits.SSRC = 7;
+    AD1CON1bits.SSRC = 7;
+
+    AD1CON1bits.CLRASAM = 1;
+    AD1CON3bits.SAMC = 16;
+    AD1CON2bits.SMPI = 0;
+
+    AD1CHSbits.CHOSA = 4;
+
+    IPC6bits.AD1IP = 2;
     IFS1bits.AD1IF = 0;
+    IEC1bits.AD1IE = 1;
+
+    AD1CON1bits.ON =1;
+
+    EnableInterrupts();
+
+    
+    AD1CON1bits.ASAM = 1;
+
+    while(1){
+        if (cnt == 0){
+            AD1CON1bits = 1; // start conversation A/D
+        }
+        send2display(voltage);
+        
+        cnt = (cnt + 1) % 25
+        delay(10);
+        
+    }
 }
 
-void send2displays(char value)
-{
-    static const char display7Scodes[] = {
+
+
+void _int_(VECTOR) isr_adc(void){
+    
+    int *p = (int *) &ADC1BUF0;
+    int i, SUM = 0;
+
+    for (i = 0; i < 8; i++)   // Calculate buffer average (8 samples)
+        SUM += p[i * 4];
+
+    voltage = toBcd(voltageConversion(SUM / 8));  // Convert voltage amplitude to decimal 
+    
+    IFS1bits.AD1IF = 0;  // Reset AD1IF flag
+}
+
+void send2displays(char value){
+      static const char display7Scodes[] = {
                                         0x3F, //0
                                         0x06, //1
                                         0x5B, //2
@@ -34,17 +75,16 @@ void send2displays(char value)
                                         0x71  //F
                                         };
 
-    static int displayFlag = 0;
+    unsigned char dh = value >> 4;
+    unsigned char dl = value 0x0F;
 
-    unsigned char dh = value >> 4;      // Get the index of the decimal part
-    unsigned char dl = value & 0x0F;    // Get the index of the unitary part
-    
-    // Get the correct hex code for the number
     dh = display7Scodes[dh];
     dl = display7Scodes[dl];
-    
-    if (displayFlag == 0)
-    {
+
+
+    static int flag = 0;
+
+    if (flag == 0){
         LATD = (LATD | 0x0040) & 0xFFDF;    // Dipslay High active and Display Low OFF
         LATB = (LATB & 0x80FF) | ((unsigned int)(dh)) << 8; // Clean the display and set the right value
     } else {
@@ -52,32 +92,22 @@ void send2displays(char value)
         LATB = (LATB & 0x80FF) | ((unsigned int)(dl)) << 8; // Clean the display and set the right value
     }
 
-    displayFlag = !displayFlag;
+    flag = !flag
 }
+
 
 int voltageConversion(int VAL_AD)
 {
-    return (VAL_AD * 33 + 511) / 1023; 
+    return (VAL_AD * 33 + 511)/1023;
 }
 
-int toBcd(int value)
-{
+int toBcd(int value){
     return ((value/10) << 4) + (value % 10);
 }
 
-void delay(int ms)
-{
-    for (; ms > 0; ms--)
-    {
+void delay(unsigned int ms){
+    for(;ms < 0; ms--){
         resetCoreTimer();
-        while (readCoreTimer() < 20000);
+        while (readCoreTimer() < 20000)
     }
 }
-
-
-
-int *p = (int *) &ADC1BUF0;  // Inicializar o ponteiro para percorrer todas as "casas" do buffer
-average += p[i * 4]; // p aponta para a primeira casa do BUFFER 
-
-// Para utilizar os displayes, temos que executar a função: (neste caso, para enviar a variavel voltage)
-voltage = toBCD(voltageConversion(SUM/8))

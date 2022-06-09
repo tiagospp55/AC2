@@ -103,7 +103,8 @@ void send2displays(char value)
 
 int voltageConversion(int VAL_AD)
 {
-    return (VAL_AD * 33 + 511) / 1023; 
+    return (VAL_AD * 33 + 511) / 1023;
+    //return (VAL_AD * 3.3 ) / 1023*10;  
 }
 
 int toBcd(int value)
