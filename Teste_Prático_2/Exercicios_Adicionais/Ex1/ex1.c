@@ -1,3 +1,4 @@
+// Está mal, mas a lógica está presente
 #include <detpic32.h>
 
 volatile char x;
